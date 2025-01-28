@@ -1,0 +1,190 @@
+// The following commented code contains the program as it was written before any security vulnerabilities are fixed
+// I have added comments throughout this section identifying security vulnerabilities.
+
+/*
+#include <iostream>
+
+using namespace std;
+
+void DisplayMenu() {
+    cout << "----------------";
+    cout << "- 1)Add -";
+    cout << "- 2)Subtract -";
+    cout << "- 3)Multiply -";
+    cout << "- 4)Exit -";
+    cout << "----------------";
+}
+
+int main()
+{
+    int choice = 0;
+
+    while (choice != 5) {
+
+        // In the assembly code, the function DisplayMenu is never called. It displays the menu strings here first.
+        // Also, the code is intending for us to divide, not multiply, therefore, this should be fixed.
+
+        cout << "----------------";
+        cout << "- 1)Add -";
+        cout << "- 2)Subtract -";
+        cout << "- 3)Multiply -"; 
+        cout << "- 4)Exit -";
+        cout << "----------------";
+
+        // the variable choice is taken in from input, and some checks are done, but not all checks, which could lead to a vulnerability where the loop is
+        // never exited because the user expects the program to exit by selecting option 4, however, option 4 is never checked, and the program will only 
+        // terminate if the user enters the value 5.
+
+        cin >> choice;
+
+        if (choice == 1) {
+            // variables should always be declared and initialized right before their use.
+            int num1, num2; 
+
+            // use of un-initialized variables, we should ask the user to enter two numbers to add together.
+            // incorrect operation, this should be changed to addition
+            // There is no input validation. If the user enters a value that is not within the numerical limits of an integer, a buffer overflow will occur. This could lead to other security issues, for example, a Denial-of-Service.
+            cout << num1 << " - " << num2 << " = " << num1 - num2;
+        }
+
+        if (choice == 2) {
+            // variables should always be declared and initialized right before their use.
+            int num1, num2;
+
+            // use of un-initialized variables, we should ask the user to enter two numbers to subtract.
+            // incorrect operation, this should be changed to subtraction
+            // There is no input validation. If the user enters a value that is not within the numerical limits of an integer, a buffer overflow will occur. This could lead to other security issues, for example, a Denial-of-Service.
+            cout << num1 << " + " << num2 << " = " << num1 + num2;
+        }
+
+        if (choice == 3) {
+            // variables should always be declared and initialized right before their use.
+            double num1, num2;
+
+            // use of uninitialized variables, we should ask the user to enter two numbers to divide by.
+            // There is no input validation. If the user enters a value that is not within the numerical limits of an integer, a buffer overflow will occur. This could lead to other security issues, for example, a Denial-of-Service.
+            // Also, there is no input validation to ensure the second number is not zero, since a number cannot be divided by zero.
+            
+            cout << num1 << " / " << num2 << " = " << num1 / num2;
+        }
+    }
+}
+*/
+
+// The following code is how the should be written with vulnerabilities  handled
+
+#include <iostream>
+
+using namespace std;
+
+void DisplayMenu() {
+
+    // formatted the output and changed Multiply to Divide
+    cout << "----------------\n";
+    cout << "-  1)Add       -\n";
+    cout << "-  2)Subtract  -\n";
+    cout << "-  3)Divide    -\n";
+    cout << "-  4)Exit      -\n";
+    cout << "----------------\n\n";
+    cout << "Please select an option: ";
+}
+
+int main() {
+
+    int choice = 0;
+
+    while (choice != 4) {
+        
+        // Calls the function to Display the menu to the user, as intended by the original programmer.
+        DisplayMenu();
+        
+        cin >> choice;
+        
+        if (choice == 1) {
+            
+            int num1 = 0, num2 = 0; // variables should always be declared and initialized right before their use.
+
+            cout << "Please enter the first number: ";
+
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            while (!(cin >> num1)) {
+                cout << "Invalid entry. Please enter an integer: ";
+                cin.clear();
+                cin.ignore(numeric_limits<int>::max(), '\n');
+            }
+
+            cout << "Please enter the second number: ";
+
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            while (!(cin >> num2)) {
+                cout << "Invalid entry. Please enter an integer: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
+            cout << num1 << " + " << num2 << " = " << num1 + num2 << endl;
+        }
+        else if (choice == 2) {
+            int num1 = 0, num2 = 0; // variables should always be declared and initialized right before their use.
+            
+            cout << "Please enter the first number: ";
+            
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            while (!(cin >> num1)) {
+                cout << "Invalid entry. Please enter an integer: ";
+                cin.clear();
+                cin.ignore(numeric_limits<int>::max(), '\n');
+            }
+
+            cout << "Please enter the second number: ";
+
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            while (!(cin >> num2)) {
+                cout << "Invalid entry. Please enter an integer: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            cout << num1 << " - " << num2 << " = " << num1 - num2 << endl;
+        }
+        else if (choice == 3) {
+            double num1 = 0, num2 = 0; // variables should always be declared and initialized right before their use.
+            
+            cout << "Please enter the first number: ";
+            
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            while (!(cin >> num1)) {
+                cout << "Invalid entry. Please enter an integer: ";
+                cin.clear();
+                cin.ignore(numeric_limits<int>::max(), '\n');
+            }
+
+            cout << "Please enter the second number: ";
+
+            // read input and validate to ensure the value entered is a valid integer
+            // This ensures no buffer overflow will occur
+            // We also check to make sure the value enetered is not zero, because a number cannot be divided by zero.
+            while (!(cin >> num2) || num2 == 0) {
+                cout << "Invalid entry. Please enter an integer that is not zero: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            cout << num1 << " / " << num2 << " = " << num1 / num2 << endl;
+        }
+        // We ensure option 4 is checked, otherwise the following else statement would still be executed before the program exited.
+        else if (choice == 4) {
+            break;
+        }
+        else {
+            // Displays a message to the user that they have made an invalid selection.
+            cout << "Invalid Selection." << endl;
+        }
+    }
+    return 0;
+}
+
+
